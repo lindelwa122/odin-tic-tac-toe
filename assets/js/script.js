@@ -115,7 +115,7 @@ const player = (name, marker) => {
     while (true) {
       const cell = +prompt(`${name} please choose a cell (1-9)? `);
 
-      if (cell < 1 || cell > 9) {
+      if (isNaN(cell) || cell < 1 || cell > 9) {
         console.log("Please choose a number between 1 and 9.");
         continue;
       }
