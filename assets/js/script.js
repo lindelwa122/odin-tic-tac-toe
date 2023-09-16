@@ -1,25 +1,25 @@
 const gameboard = (() => {
   const _cell = () => {
-    let _value = '';
+    let _value = "";
 
     const updateValue = (marker) => {
       if (_value.length === 0) {
         _value = marker;
         return true;
       } else return false;
-    }
+    };
 
     const getValue = () => _value;
 
     return { getValue, updateValue };
-  }
+  };
 
   const rows = 3;
   const columns = 3;
   const board = [];
 
   for (let i = 0; i < rows; i++) {
-    board[i] = []
+    board[i] = [];
     for (let j = 0; j < columns; j++) {
       board[i].push(_cell());
     }
@@ -37,21 +37,21 @@ const gameboard = (() => {
     }
 
     console.table(boardCopy);
-  }
+  };
 
   const updateBoard = (row, column, marker) => {
     return board[row][column].updateValue(marker);
-  }
+  };
 
   const findWinner = () => {
     return null;
-  }
+  };
 
   return {
     findWinner,
     printGameboard,
-    updateBoard
-  }
+    updateBoard,
+  };
 })();
 
 const player = (name, marker) => {
@@ -66,7 +66,7 @@ const player = (name, marker) => {
     7: { row: 2, column: 0 },
     8: { row: 2, column: 1 },
     9: { row: 2, column: 2 },
-  }
+  };
 
   const getName = () => name;
   const getMarker = () => marker;
@@ -81,16 +81,15 @@ const player = (name, marker) => {
       }
 
       const { row, column } = grid[cell];
-
       const updated = gameboard.updateBoard(row, column, marker);
 
       if (updated) break;
       else console.log(`Cell ${cell} is occupied`);
     }
-  }
+  };
 
   return { getMarker, getName, play };
-}
+};
 
 const player1 = player("Jimmy", "X");
 const player2 = player("Katy", "O");
@@ -102,9 +101,9 @@ const gameController = ((player1, player2) => {
 
   const _updateCurrentPlayer = () => {
     _currentPlayer = _currentPlayer === 0 ? 1 : 0;
-  }
+  };
 
-  const _getCurrentPlayer = () =>  _players[_currentPlayer];
+  const _getCurrentPlayer = () => _players[_currentPlayer];
 
   const play = () => {
     while (true) {
@@ -112,14 +111,12 @@ const gameController = ((player1, player2) => {
       _updateCurrentPlayer();
 
       player.play();
-
       gameboard.printGameboard();
 
       const winner = gameboard.findWinner();
-
       if (winner) break;
     }
-  }
+  };
 
   return { play };
 })(player1, player2);
