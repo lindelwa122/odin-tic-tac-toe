@@ -91,3 +91,35 @@ const player = (name, marker) => {
 
   return { getMarker, getName, play };
 }
+
+const player1 = player("Jimmy", "X");
+const player2 = player("Katy", "O");
+
+const gameController = ((player1, player2) => {
+  const _players = [player1, player2];
+
+  let _currentPlayer = 0;
+
+  const _updateCurrentPlayer = () => {
+    _currentPlayer = _currentPlayer === 0 ? 1 : 0;
+  }
+
+  const _getCurrentPlayer = () =>  _players[_currentPlayer];
+
+  const play = () => {
+    while (true) {
+      const player = _getCurrentPlayer();
+      _updateCurrentPlayer();
+
+      player.play();
+
+      gameboard.printGameboard();
+
+      const winner = gameboard.findWinner();
+
+      if (winner) break;
+    }
+  }
+
+  return { play };
+})(player1, player2);
