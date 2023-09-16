@@ -1,0 +1,35 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: grid;
+  grid-template: 1fr 4fr / 1fr 1.3fr 1fr;  
+}
+
+body > div {
+  height: 100%;
+}
+
+html, body {
+  min-height: 100vh;
+}
+
+.player-profile {
+  background-color: coral;
+  grid-row: 1 / -1;
+}
+
+.round-board {
+  background-color: blueviolet;
+}
+
+.game-board {
+  background-color: slategray;
+}
+
+.computer-profile {
+  background-color: plum;
+  grid-row: 1 / -1;
+  grid-column: 3;
+}
