@@ -33,3 +33,15 @@ html, body {
   grid-row: 1 / -1;
   grid-column: 3;
 }
+
+.grid {
+  display: grid;
+  gap: 1vw;
+  grid-template: repeat(3, 10vw) / repeat(3, 10vw);
+  justify-content: center;
+}
+
+.cell {
+  background-color: khaki;
+  height: 100%;
+}
