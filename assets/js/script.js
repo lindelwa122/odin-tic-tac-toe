@@ -56,7 +56,37 @@ const gameboard = (() => {
     return board[row][column].updateValue(marker);
   };
 
+  const _winningCombinations = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    [1, 5, 9],
+    [3, 5, 7],
+  ];
+
   const findWinner = () => {
+    for (let i = 0; i < _winningCombinations.length; i++) {
+      const position1 = grid[_winningCombinations[i][0]];
+      const position2 = grid[_winningCombinations[i][1]];
+      const position3 = grid[_winningCombinations[i][2]];
+
+      const cell1 = board[position1.row][position1.column];
+      const cell2 = board[position2.row][position2.column];
+      const cell3 = board[position3.row][position3.column];
+
+      const allMatch = [cell1, cell2, cell3].every((val) => {
+        return val.getValue() !== "" && val.getValue() === cell1.getValue();
+      });
+      if (allMatch) {
+        const winner = cell1.getValue();
+        console.log(`The winner is player ${winner}`);
+        return winner;
+      }
+    }
+
     return null;
   };
 
