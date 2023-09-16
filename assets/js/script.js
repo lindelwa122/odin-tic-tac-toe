@@ -1,3 +1,16 @@
+// usage: converts how the human see the gameboard to how the conputer sees it (in rows and columns)
+const grid = {
+  1: { row: 0, column: 0 },
+  2: { row: 0, column: 1 },
+  3: { row: 0, column: 2 },
+  4: { row: 1, column: 0 },
+  5: { row: 1, column: 1 },
+  6: { row: 1, column: 2 },
+  7: { row: 2, column: 0 },
+  8: { row: 2, column: 1 },
+  9: { row: 2, column: 2 },
+};
+
 const gameboard = (() => {
   const _cell = () => {
     let _value = "";
@@ -55,19 +68,6 @@ const gameboard = (() => {
 })();
 
 const player = (name, marker) => {
-  // usage: converts how the human see the gameboard to how the conputer sees it (in rows and columns)
-  const grid = {
-    1: { row: 0, column: 0 },
-    2: { row: 0, column: 1 },
-    3: { row: 0, column: 2 },
-    4: { row: 1, column: 0 },
-    5: { row: 1, column: 1 },
-    6: { row: 1, column: 2 },
-    7: { row: 2, column: 0 },
-    8: { row: 2, column: 1 },
-    9: { row: 2, column: 2 },
-  };
-
   const getName = () => name;
   const getMarker = () => marker;
 
