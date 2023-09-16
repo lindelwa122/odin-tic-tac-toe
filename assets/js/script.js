@@ -56,6 +56,15 @@ const gameboard = (() => {
     return board[row][column].updateValue(marker);
   };
 
+  const _isGameOver = () => {
+    const cells = []
+    board.map((row) => {
+      row.map((cell) => cells.push(cell));
+    });
+    
+    return cells.every((cell) => cell.getValue() !== '');
+  }
+
   const _winningCombinations = [
     [1, 2, 3],
     [4, 5, 6],
@@ -87,7 +96,8 @@ const gameboard = (() => {
       }
     }
 
-    return null;
+    if (_isGameOver()) return 'draw';
+    else return null;
   };
 
   return {
