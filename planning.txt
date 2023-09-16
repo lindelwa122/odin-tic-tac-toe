@@ -1,0 +1,26 @@
+TIC TAC TOE 
+
+Requirements:
+- Build GameBoard:
+    * creates the gameboard 
+    * responsible for updating the board (updateBoard)
+    * have a function that can check when there's a winner (findWinner)
+    * prints the gameboard (printGameboard)
+
+- GameController:
+    * takes in players as parameters and stores them in an array (only 2)
+        - player with marker 'x' gets the privilege of being first
+    * create a variable of type int called currentPlayer that starts with 0
+    * its function is to get the player who is supposed to play (getNextPlayer)
+    * play()
+        - while findWinner() returns none:
+            * call play method of the player returned by getNextPlayer()
+
+- Create Player:
+    * stores player name and marker
+    * convertBoxNumberToGridAndColumn
+    * play()
+        - while true:
+            * ask the user which box they want to place their marker in
+            * if updateBoard() returns true then return otherwise console log "Box {x} is occupied"
+            * print the GameBoard()
