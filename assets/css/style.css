@@ -39,9 +39,12 @@ html, body {
   gap: 1vw;
   grid-template: repeat(3, 10vw) / repeat(3, 10vw);
   justify-content: center;
+  margin-top: 60px;
 }
 
 .cell {
   background-color: khaki;
+  border: 50px solid #000;
+  border-radius: 90px;
   height: 100%;
 }
