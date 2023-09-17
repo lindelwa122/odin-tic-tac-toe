@@ -48,3 +48,22 @@ html, body {
   border-radius: 25px;
   height: 100%;
 }
+
+.player-profile > div,
+.computer-profile > div {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.computer-profile,
+.player-profile {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+img {
+  width: 25vw;
+}
