@@ -37,14 +37,14 @@ html, body {
 .grid {
   display: grid;
   gap: 1vw;
-  grid-template: repeat(3, 10vw) / repeat(3, 10vw);
+  grid-template: repeat(3, 8vw) / repeat(3, 8vw);
   justify-content: center;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 
 .cell {
   background-color: khaki;
-  border: 50px solid #000;
-  border-radius: 90px;
+  border: 10px solid #000;
+  border-radius: 25px;
   height: 100%;
 }
