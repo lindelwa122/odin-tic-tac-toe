@@ -124,9 +124,9 @@ const player = (name, marker) => {
   const getName = () => name;
   const getMarker = () => marker;
 
-  const play = () => {
+  const play = async () => {
     while (true) {
-      const cell = +prompt(`${name} please choose a cell (1-9)? `);
+      const cell = await displayController.getPlayerPosition();
 
       if (isNaN(cell) || cell < 1 || cell > 9) {
         console.log("Please choose a number between 1 and 9.");
@@ -191,7 +191,7 @@ const gameController = ((player1, player2) => {
   return { play };
 })(player1, player2);
 
-const displayController = () => {
+const displayController = (() => {
   const updateIndicator = () => {
     const indicators = document.querySelectorAll(".playing-indicator");
     indicators.forEach((indicator) => indicator.classList.toggle("active"));
@@ -204,7 +204,6 @@ const displayController = () => {
         items.forEach((item) => {
           item.removeEventListener("click", handleClick);
         });
-        console.log({ e });
         resolve(e.target.dataset.cell);
       };
 
@@ -223,4 +222,4 @@ const displayController = () => {
   };
 
   return { getPlayerPosition, updateBoard, updateIndicator };
-};
+})();
