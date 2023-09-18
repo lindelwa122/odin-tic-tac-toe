@@ -183,9 +183,12 @@ const gameController = ((player1, player2) => {
   const _players = [player1, player2];
 
   let _currentPlayer = 0;
-  let _round = 1;
 
-  const _updateRound = () => ++_round;
+  let _sumOfPlayersScore = 0;
+
+  const _updateSumOfPlayersScore = () => {
+    _sumOfPlayersScore = _players[0].getScore() + _players[1].getScore();
+  }
 
   const _updateCurrentPlayer = () => {
     _currentPlayer = _currentPlayer === 0 ? 1 : 0;
@@ -205,7 +208,7 @@ const gameController = ((player1, player2) => {
   }
 
   const play = async () => {
-    while (_round <= 5) {
+    while (_sumOfPlayersScore < 5) {
       while (true) {
         const player = _getCurrentPlayer();
         _updateCurrentPlayer();
@@ -227,7 +230,7 @@ const gameController = ((player1, player2) => {
           break;
         }
       }
-      _updateRound();
+      _updateSumOfPlayersScore();
       _reset();
     }
   };
