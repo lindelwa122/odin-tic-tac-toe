@@ -25,7 +25,11 @@ html, body {
 }
 
 .round-board {
+  align-items: center;
   background-color: blueviolet;
+  display: flex;
+  font-size: 3rem;
+  justify-content: center;
 }
 
 .game-board {
