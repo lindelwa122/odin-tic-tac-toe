@@ -193,6 +193,11 @@ const gameController = ((player1, player2) => {
 
   const _getCurrentPlayer = () => _players[_currentPlayer];
 
+  const _reset = () => {
+    gameboard.clearGameboard();
+    displayController.updateBoard();
+  }
+
   const play = async () => {
     while (_round <= 5) {
       while (true) {
@@ -217,6 +222,7 @@ const gameController = ((player1, player2) => {
         }
       }
       _updateRound();
+      _reset();
     }
   };
 
