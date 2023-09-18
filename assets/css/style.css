@@ -47,9 +47,12 @@ body {
 }
 
 .cell {
+  align-items: center; 
   background-color: #5c8374;
   border: 10px solid #183d3d;
   border-radius: 25px;
+  display: flex;
+  justify-content: center;
   height: 100%;
 }
 
