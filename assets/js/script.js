@@ -231,7 +231,7 @@ const gameController = ((player1, player2) => {
         }
       }
       _updateSumOfPlayersScore();
-      _reset();
+      setTimeout(_reset, 3000);
     }
   };
 
