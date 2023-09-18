@@ -175,7 +175,7 @@ const displayController = () => {
           item.removeEventListener("click", handleClick);
         });
         console.log({ e });
-        resolve(e.target.datast.cell);
+        resolve(e.target.dataset.cell);
       };
 
       items.forEach((item) => {
