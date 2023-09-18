@@ -52,6 +52,18 @@ const gameboard = (() => {
     console.table(boardCopy);
   };
 
+  const getBoardData = () => {
+    const boardData = [];
+
+    for (const row of board) {
+      for (const cell of row) {
+        boardData.push(cell.getValue());
+      }
+    }
+
+    return boardData;
+  }
+
   const updateBoard = (row, column, marker) => {
     return board[row][column].updateValue(marker);
   };
@@ -102,6 +114,7 @@ const gameboard = (() => {
 
   return {
     findWinner,
+    getBoardData,
     printGameboard,
     updateBoard,
   };
@@ -185,7 +198,7 @@ const displayController = () => {
   };
 
   const updateBoard = () => {
-    const board = gameboard.getGameboard();
+    const board = gameboard.getBoardData();
     const cells = document.querySelectorAll(".cells");
     cells.forEach((cell, index) => {
       cell.textContent = board[index];
