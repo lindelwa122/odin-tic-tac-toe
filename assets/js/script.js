@@ -144,8 +144,25 @@ const player = (name, marker) => {
   return { getMarker, getName, play };
 };
 
+const computer = (name, marker) => {
+  const prototype = player(name, marker);
+
+  const play = () => {
+    while (true) {
+      const row = Math.floor(Math.random() * 3);
+      const column = Math.floor(Math.random() * 3);
+
+      const updated = gameboard.updateBoard(row, column, marker);
+
+      if (updated) break;
+    }
+  } 
+
+  return Object.assign({}, prototype, { play });
+}
+
 const player1 = player("Jimmy", "X");
-const player2 = player("Katy", "O");
+const player2 = computer("Katy", "O");
 
 const gameController = ((player1, player2) => {
   const _players = [player1, player2];
