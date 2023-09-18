@@ -103,7 +103,6 @@ const gameboard = (() => {
       });
       if (allMatch) {
         const winner = cell1.getValue();
-        console.log(`The winner is player ${winner}`);
         return winner;
       }
     }
@@ -185,7 +184,17 @@ const gameController = ((player1, player2) => {
       gameboard.printGameboard();
 
       const winner = gameboard.findWinner();
-      if (winner) break;
+
+      if (winner === "X") {
+        alert("You won");
+        break;
+      } else if (winner === "O") {
+        alert("You lose");
+        break;
+      } else if (winner === "draw") {
+        alert("It's a draw");
+        break;
+      }
     }
   };
 
@@ -224,3 +233,5 @@ const displayController = (() => {
 
   return { getPlayerPosition, updateBoard, updateIndicator };
 })();
+
+gameController.play();
