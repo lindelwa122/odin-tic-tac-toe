@@ -181,6 +181,7 @@ const gameController = ((player1, player2) => {
       _updateCurrentPlayer();
 
       await player.play();
+      displayController.updateBoard();
       gameboard.printGameboard();
 
       const winner = gameboard.findWinner();
@@ -215,7 +216,7 @@ const displayController = (() => {
 
   const updateBoard = () => {
     const board = gameboard.getBoardData();
-    const cells = document.querySelectorAll(".cells");
+    const cells = document.querySelectorAll(".cell");
     cells.forEach((cell, index) => {
       cell.textContent = board[index];
     });
