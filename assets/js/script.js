@@ -24,7 +24,9 @@ const gameboard = (() => {
 
     const getValue = () => _value;
 
-    return { getValue, updateValue };
+    const clear = () => _value = "";
+
+    return { clear, getValue, updateValue };
   };
 
   const rows = 3;
@@ -35,6 +37,14 @@ const gameboard = (() => {
     board[i] = [];
     for (let j = 0; j < columns; j++) {
       board[i].push(_cell());
+    }
+  }
+
+  const clearGameboard = () => {
+    for (const row of board) {
+      for (const cell of row) {
+        cell.clear();
+      }
     }
   }
 
@@ -112,6 +122,7 @@ const gameboard = (() => {
   };
 
   return {
+    clearGameboard,
     findWinner,
     getBoardData,
     printGameboard,
