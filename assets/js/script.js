@@ -175,12 +175,12 @@ const gameController = ((player1, player2) => {
 
   const _getCurrentPlayer = () => _players[_currentPlayer];
 
-  const play = () => {
+  const play = async () => {
     while (true) {
       const player = _getCurrentPlayer();
       _updateCurrentPlayer();
 
-      player.play();
+      await player.play();
       gameboard.printGameboard();
 
       const winner = gameboard.findWinner();
