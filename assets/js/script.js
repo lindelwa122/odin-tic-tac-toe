@@ -172,6 +172,9 @@ const gameController = ((player1, player2) => {
   const _players = [player1, player2];
 
   let _currentPlayer = 0;
+  let _round = 1;
+
+  const _updateRound = () => ++_round;
 
   const _updateCurrentPlayer = () => {
     _currentPlayer = _currentPlayer === 0 ? 1 : 0;
@@ -180,26 +183,29 @@ const gameController = ((player1, player2) => {
   const _getCurrentPlayer = () => _players[_currentPlayer];
 
   const play = async () => {
-    while (true) {
-      const player = _getCurrentPlayer();
-      _updateCurrentPlayer();
-
-      await player.play();
-      displayController.updateBoard();
-      gameboard.printGameboard();
-
-      const winner = gameboard.findWinner();
-
-      if (winner === "X") {
-        alert("You won");
-        break;
-      } else if (winner === "O") {
-        alert("You lose");
-        break;
-      } else if (winner === "draw") {
-        alert("It's a draw");
-        break;
+    while (_round <= 5) {
+      while (true) {
+        const player = _getCurrentPlayer();
+        _updateCurrentPlayer();
+  
+        await player.play();
+        displayController.updateBoard();
+        gameboard.printGameboard();
+  
+        const winner = gameboard.findWinner();
+  
+        if (winner === "X") {
+          alert("You won");
+          break;
+        } else if (winner === "O") {
+          alert("You lose");
+          break;
+        } else if (winner === "draw") {
+          alert("It's a draw");
+          break;
+        }
       }
+      _updateRound();
     }
   };
 
