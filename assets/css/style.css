@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Kaushan+Script&family=Sedgwick+Ave+Display&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Kaushan+Script&family=Sedgwick+Ave+Display&display=swap");
 
 * {
   box-sizing: border-box;
@@ -6,38 +6,34 @@
 
 body {
   display: grid;
-  grid-template: 1fr 4fr / 1fr 1.3fr 1fr;  
+  grid-template: 1fr 4fr / 1fr 1.3fr 1fr;
   font-size: 2.5rem;
-  font-family: 'Sedgwick Ave Display', cursive;
+  font-family: "Sedgwick Ave Display", cursive;
+  background-color: #040d12;
+  color: #f5f5f5;
 }
 
 body > div {
   height: 100%;
 }
 
-html, body {
+html,
+body {
   min-height: 100vh;
 }
 
 .player-profile {
-  background-color: coral;
   grid-row: 1 / -1;
 }
 
 .round-board {
   align-items: center;
-  background-color: blueviolet;
   display: flex;
   font-size: 3rem;
   justify-content: center;
 }
 
-.game-board {
-  background-color: slategray;
-}
-
 .computer-profile {
-  background-color: plum;
   grid-row: 1 / -1;
   grid-column: 3;
 }
@@ -51,8 +47,8 @@ html, body {
 }
 
 .cell {
-  background-color: khaki;
-  border: 10px solid #000;
+  background-color: #5c8374;
+  border: 10px solid #183d3d;
   border-radius: 25px;
   height: 100%;
 }
