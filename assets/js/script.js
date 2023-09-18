@@ -57,13 +57,13 @@ const gameboard = (() => {
   };
 
   const _isGameOver = () => {
-    const cells = []
+    const cells = [];
     board.map((row) => {
       row.map((cell) => cells.push(cell));
     });
-    
-    return cells.every((cell) => cell.getValue() !== '');
-  }
+
+    return cells.every((cell) => cell.getValue() !== "");
+  };
 
   const _winningCombinations = [
     [1, 2, 3],
@@ -96,7 +96,7 @@ const gameboard = (() => {
       }
     }
 
-    if (_isGameOver()) return 'draw';
+    if (_isGameOver()) return "draw";
     else return null;
   };
 
@@ -160,3 +160,37 @@ const gameController = ((player1, player2) => {
 
   return { play };
 })(player1, player2);
+
+const displayController = () => {
+  const updateIndicator = () => {
+    const indicators = document.querySelectorAll(".playing-indicator");
+    indicators.forEach((indicator) => indicator.classList.toggle("active"));
+  };
+
+  const getPlayerPosition = () => {
+    const items = document.querySelectorAll(".cell");
+    return new Promise((resolve) => {
+      const handleClick = (e) => {
+        items.forEach((item) => {
+          item.removeEventListener("click", handleClick);
+        });
+        console.log({ e });
+        resolve(e.target.datast.cell);
+      };
+
+      items.forEach((item) => {
+        item.addEventListener("click", handleClick);
+      });
+    });
+  };
+
+  const updateBoard = () => {
+    const board = gameboard.getGameboard();
+    const cells = document.querySelectorAll(".cells");
+    cells.forEach((cell, index) => {
+      cell.textContent = board[index];
+    });
+  };
+
+  return { getPlayerPosition, updateBoard, updateIndicator };
+};
