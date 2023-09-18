@@ -198,6 +198,12 @@ const gameController = ((player1, player2) => {
     displayController.updateBoard();
   }
 
+  const _updateScore = (marker) => {
+    const player = _players.find((player) => player.getMarker() === marker);
+    const score = player.updateScore();
+    displayController.updateScore(score, marker);
+  }
+
   const play = async () => {
     while (_round <= 5) {
       while (true) {
@@ -211,10 +217,10 @@ const gameController = ((player1, player2) => {
         const winner = gameboard.findWinner();
   
         if (winner === "X") {
-          alert("You won");
+          _updateScore("X")
           break;
         } else if (winner === "O") {
-          alert("You lose");
+          _updateScore("O")
           break;
         } else if (winner === "draw") {
           alert("It's a draw");
@@ -259,7 +265,14 @@ const displayController = (() => {
     });
   };
 
-  return { getPlayerPosition, updateBoard, updateIndicator };
+  const updateScore = (score, marker) => {
+    // containerCN = container class name
+    const containerCN = marker === "X" ? "player-profile" : "computer-profile";
+    const scoreboard = document.querySelector(`.${containerCN} .score`);
+    scoreboard.textContent = score;
+  }
+
+  return { getPlayerPosition, updateBoard, updateIndicator, updateScore };
 })();
 
 gameController.play();
