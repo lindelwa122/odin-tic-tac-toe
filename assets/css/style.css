@@ -71,3 +71,22 @@ body {
 img {
   width: 25vw;
 }
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.playing-indicator {
+  border-radius: 50%;
+  display: inline-block;
+  width: 1vw;
+  height: 1vw;
+  background-color: #93b1a6;
+  visibility: hidden;
+}
+
+.playing-indicator.active {
+  visibility: visible;
+}
