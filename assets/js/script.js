@@ -120,6 +120,11 @@ const gameboard = (() => {
 })();
 
 const player = (name, marker) => {
+  let _score = 0;
+
+  const updateScore = () => ++_score;
+  const getScore = () => _score;
+
   const getName = () => name;
   const getMarker = () => marker;
 
@@ -140,7 +145,7 @@ const player = (name, marker) => {
     }
   };
 
-  return { getMarker, getName, play };
+  return { getMarker, getName, getScore, play, updateScore };
 };
 
 const computer = (name, marker) => {
