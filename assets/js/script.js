@@ -227,8 +227,13 @@ const gameController = ((player1, player2) => {
       while (true) {
         const player = _getCurrentPlayer();
         _updateCurrentPlayer();
-  
+        
+        displayController.updateIndicator();
+
         await player.play();
+
+        if (player.getType() === "computer") await _sleep(500);
+
         displayController.updateBoard();
         gameboard.printGameboard();
   
