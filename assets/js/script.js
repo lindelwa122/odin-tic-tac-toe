@@ -246,12 +246,6 @@ const gameController = ((player1, player2) => {
         }
       }
 
-      if (_sumOfPlayersScore === 4) {
-        displayController.displayWinner(
-          _players.find((player) => player.getType() === "human").getScore()
-        );
-      }
-
       setTimeout(() => {
         // wait for 3 seconds to allow player to view the board before it's cleared
         // allow player to analyze how the lost or won
@@ -260,6 +254,12 @@ const gameController = ((player1, player2) => {
       }, 3000);
       // wait for the setTimeout before proceeding
       await _sleep(3000);
+
+      if (_sumOfPlayersScore === 5) {
+        displayController.displayWinner(
+          _players.find((player) => player.getType() === "human").getScore()
+        );
+      }
     }
   };
 
