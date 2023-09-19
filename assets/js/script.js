@@ -23,8 +23,9 @@ const gameboard = (() => {
     };
 
     const getValue = () => _value;
-
-    const clear = () => _value = "";
+    const clear = () => {
+      _value = "";
+    };
 
     return { clear, getValue, updateValue };
   };
@@ -40,44 +41,6 @@ const gameboard = (() => {
     }
   }
 
-  const clearGameboard = () => {
-    for (const row of board) {
-      for (const cell of row) {
-        cell.clear();
-      }
-    }
-  }
-
-  const printGameboard = () => {
-    const boardCopy = [];
-
-    for (let i = 0; i < rows; i++) {
-      boardCopy[i] = [];
-      for (let j = 0; j < columns; j++) {
-        const cell = board[i][j];
-        boardCopy[i].push(cell.getValue());
-      }
-    }
-
-    console.table(boardCopy);
-  };
-
-  const getBoardData = () => {
-    const boardData = [];
-
-    for (const row of board) {
-      for (const cell of row) {
-        boardData.push(cell.getValue());
-      }
-    }
-
-    return boardData;
-  }
-
-  const updateBoard = (row, column, marker) => {
-    return board[row][column].updateValue(marker);
-  };
-
   const _isGameOver = () => {
     const cells = [];
     board.map((row) => {
@@ -85,6 +48,14 @@ const gameboard = (() => {
     });
 
     return cells.every((cell) => cell.getValue() !== "");
+  };
+
+  const clearGameboard = () => {
+    for (const row of board) {
+      for (const cell of row) {
+        cell.clear();
+      }
+    }
   };
 
   const _winningCombinations = [
@@ -111,6 +82,7 @@ const gameboard = (() => {
       const allMatch = [cell1, cell2, cell3].every((val) => {
         return val.getValue() !== "" && val.getValue() === cell1.getValue();
       });
+
       if (allMatch) {
         const winner = cell1.getValue();
         return winner;
@@ -121,11 +93,26 @@ const gameboard = (() => {
     else return null;
   };
 
+  const getBoardData = () => {
+    const boardData = [];
+
+    for (const row of board) {
+      for (const cell of row) {
+        boardData.push(cell.getValue());
+      }
+    }
+
+    return boardData;
+  };
+
+  const updateBoard = (row, column, marker) => {
+    return board[row][column].updateValue(marker);
+  };
+
   return {
     clearGameboard,
     findWinner,
     getBoardData,
-    printGameboard,
     updateBoard,
   };
 })();
@@ -133,32 +120,34 @@ const gameboard = (() => {
 const player = (type, marker) => {
   let _score = 0;
 
-  const updateScore = () => ++_score;
   const getScore = () => _score;
-
-  const getType = () => type;
+  const updateScore = () => ++_score;
+  const resetScore = () => {
+    _score = 0;
+  };
   const getMarker = () => marker;
-
-  const resetScore = () => _score = 0;
+  const getType = () => type;
 
   const play = async () => {
     while (true) {
       const cell = await displayController.getPlayerPosition();
 
-      if (isNaN(cell) || cell < 1 || cell > 9) {
-        console.log("Please choose a number between 1 and 9.");
-        continue;
-      }
-
       const { row, column } = grid[cell];
       const updated = gameboard.updateBoard(row, column, marker);
 
       if (updated) break;
-      else console.log(`Cell ${cell} is occupied`);
+      else console.error(`Cell ${cell} is occupied`);
     }
   };
 
-  return { getMarker, getScore, getType, play, resetScore, updateScore };
+  return {
+    getMarker,
+    getScore,
+    getType,
+    play,
+    resetScore,
+    updateScore,
+  };
 };
 
 const computer = (type, marker) => {
@@ -173,10 +162,10 @@ const computer = (type, marker) => {
 
       if (updated) break;
     }
-  } 
+  };
 
   return Object.assign({}, prototype, { play });
-}
+};
 
 const player1 = player("human", "X");
 const player2 = computer("computer", "O");
@@ -185,23 +174,32 @@ const gameController = ((player1, player2) => {
   const _players = [player1, player2];
 
   let _currentPlayer = 0;
-
   let _sumOfPlayersScore = 0;
-
-  const _updateSumOfPlayersScore = () => {
-    _sumOfPlayersScore = _players[0].getScore() + _players[1].getScore();
-  }
-
-  const _updateCurrentPlayer = () => {
-    _currentPlayer = _currentPlayer === 0 ? 1 : 0;
-  };
 
   const _getCurrentPlayer = () => _players[_currentPlayer];
 
   const _reset = () => {
     gameboard.clearGameboard();
     displayController.updateBoard();
-  }
+  };
+
+  const _sleep = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+  const _updateScore = (marker) => {
+    const player = _players.find((player) => player.getMarker() === marker);
+    const score = player.updateScore();
+    displayController.updateScore(score, player.getType());
+  };
+
+  const _updateCurrentPlayer = () => {
+    _currentPlayer = _currentPlayer === 0 ? 1 : 0;
+  };
+
+  const _updateSumOfPlayersScore = () => {
+    _sumOfPlayersScore = _players[0].getScore() + _players[1].getScore();
+  };
 
   const newGame = () => {
     for (const player of _players) {
@@ -210,40 +208,27 @@ const gameController = ((player1, player2) => {
     _sumOfPlayersScore = 0;
     _reset();
     play();
-  }
-
-  const _updateScore = (marker) => {
-    const player = _players.find((player) => player.getMarker() === marker);
-    const score = player.updateScore();
-    displayController.updateScore(score, player.getType());
-  }
-
-  const _sleep = (ms) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+  };
 
   const play = async () => {
     while (_sumOfPlayersScore < 5) {
       while (true) {
         const player = _getCurrentPlayer();
         _updateCurrentPlayer();
-        
+
         displayController.updateIndicator();
 
         await player.play();
-
         if (player.getType() === "computer") await _sleep(500);
 
         displayController.updateBoard();
-        gameboard.printGameboard();
-  
+
         const winner = gameboard.findWinner();
-  
         if (winner === "X") {
-          _updateScore("X")
+          _updateScore("X");
           break;
         } else if (winner === "O") {
-          _updateScore("O")
+          _updateScore("O");
           break;
         } else if (winner === "draw") {
           alert("It's a draw");
@@ -272,13 +257,43 @@ const gameController = ((player1, player2) => {
 })(player1, player2);
 
 const displayController = (() => {
-  const updateIndicator = () => {
-    const indicators = document.querySelectorAll(".playing-indicator");
-    indicators.forEach((indicator) => indicator.classList.toggle("active"));
+  const _resetBtnClickListener = () => {
+    const resetBtn = document.querySelector(".reset");
+
+    const clickHandler = () => {
+      updateScore(0, "human");
+      updateScore(0, "computer");
+
+      const winnerBoard = document.querySelector(".round-board");
+      winnerBoard.textContent = "";
+
+      resetBtn.classList.remove("show");
+      resetBtn.removeEventListener("click", clickHandler);
+
+      gameController.newGame();
+    };
+
+    resetBtn.addEventListener("click", clickHandler);
+  };
+
+  const displayWinner = (playerScore) => {
+    const winnerBoard = document.querySelector(".round-board");
+    if (playerScore >= 3) {
+      winnerBoard.textContent = "You won!";
+    } else {
+      winnerBoard.textContent = "You lose!";
+    }
+
+    // show reset button
+    const resetBtn = document.querySelector(".reset");
+    resetBtn.classList.add("show");
+
+    _resetBtnClickListener();
   };
 
   const getPlayerPosition = () => {
     const items = document.querySelectorAll(".cell");
+
     return new Promise((resolve) => {
       const handleClick = (e) => {
         items.forEach((item) => {
@@ -295,54 +310,34 @@ const displayController = (() => {
 
   const updateBoard = () => {
     const board = gameboard.getBoardData();
+
     const cells = document.querySelectorAll(".cell");
     cells.forEach((cell, index) => {
       cell.textContent = board[index];
     });
   };
 
+  const updateIndicator = () => {
+    const indicators = document.querySelectorAll(".playing-indicator");
+    indicators.forEach((indicator) => indicator.classList.toggle("active"));
+  };
+
   const updateScore = (score, type) => {
     // containerCN = container class name
-    const containerCN = type === "human" ? "player-profile" : "computer-profile";
+    const containerCN =
+      type === "human" ? "player-profile" : "computer-profile";
+
     const scoreboard = document.querySelector(`.${containerCN} .score`);
     scoreboard.textContent = score;
-  }
+  };
 
-  const displayWinner = (playerScore) => {
-    const winnerBoard = document.querySelector(".round-board");
-    if (playerScore >= 3) {
-      winnerBoard.textContent = "You won!";
-    } else {
-      winnerBoard.textContent = "You lose!";
-    }
-
-    // show reset button
-    const resetBtn = document.querySelector(".reset");
-    resetBtn.classList.add("show");
-
-    _resetBtnClickListener();
-  }
-
-  const _resetBtnClickListener = () => {
-    const resetBtn = document.querySelector(".reset");
-
-    const clickHandler = () => {
-      updateScore(0, "human");
-      updateScore(0, "computer");
-
-      const winnerBoard = document.querySelector(".round-board");
-      winnerBoard.textContent = "";
-
-      resetBtn.classList.remove("show");
-      resetBtn.removeEventListener("click", clickHandler);
-
-      gameController.newGame();
-    }
-
-    resetBtn.addEventListener("click", clickHandler);
-  }
-
-  return { displayWinner, getPlayerPosition, updateBoard, updateIndicator, updateScore };
+  return {
+    displayWinner,
+    getPlayerPosition,
+    updateBoard,
+    updateIndicator,
+    updateScore,
+  };
 })();
 
 gameController.play();
