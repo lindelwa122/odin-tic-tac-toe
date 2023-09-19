@@ -234,6 +234,13 @@ const gameController = ((player1, player2) => {
           break;
         }
       }
+
+      if (_sumOfPlayersScore === 4) {
+        displayController.displayWinner(
+          _players.find((player) => player.getMarker() === "X").getScore()
+        );
+      }
+
       setTimeout(() => {
         // wait for 3 seconds to allow player to view the board before it's cleared
         // allow player to analyze how the lost or won
@@ -285,7 +292,16 @@ const displayController = (() => {
     scoreboard.textContent = score;
   }
 
-  return { getPlayerPosition, updateBoard, updateIndicator, updateScore };
+  const displayWinner = (playerScore) => {
+    const winnerBoard = document.querySelector(".round-board");
+    if (playerScore >= 3) {
+      winnerBoard.textContent = "You won!";
+    } else {
+      winnerBoard.textContent = "You lose!";
+    }
+  }
+
+  return { displayWinner, getPlayerPosition, updateBoard, updateIndicator, updateScore };
 })();
 
 gameController.play();
