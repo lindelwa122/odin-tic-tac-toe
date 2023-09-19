@@ -130,13 +130,13 @@ const gameboard = (() => {
   };
 })();
 
-const player = (name, marker) => {
+const player = (type, marker) => {
   let _score = 0;
 
   const updateScore = () => ++_score;
   const getScore = () => _score;
 
-  const getName = () => name;
+  const getType = () => type;
   const getMarker = () => marker;
 
   const play = async () => {
@@ -156,11 +156,11 @@ const player = (name, marker) => {
     }
   };
 
-  return { getMarker, getName, getScore, play, updateScore };
+  return { getMarker, getScore, getType, play, updateScore };
 };
 
-const computer = (name, marker) => {
-  const prototype = player(name, marker);
+const computer = (type, marker) => {
+  const prototype = player(type, marker);
 
   const play = () => {
     while (true) {
@@ -176,8 +176,8 @@ const computer = (name, marker) => {
   return Object.assign({}, prototype, { play });
 }
 
-const player1 = player("Jimmy", "X");
-const player2 = computer("Katy", "O");
+const player1 = player("human", "X");
+const player2 = computer("computer", "O");
 
 const gameController = ((player1, player2) => {
   const _players = [player1, player2];
@@ -204,7 +204,7 @@ const gameController = ((player1, player2) => {
   const _updateScore = (marker) => {
     const player = _players.find((player) => player.getMarker() === marker);
     const score = player.updateScore();
-    displayController.updateScore(score, marker);
+    displayController.updateScore(score, player.getType());
   }
 
   const _sleep = (ms) => {
@@ -237,7 +237,7 @@ const gameController = ((player1, player2) => {
 
       if (_sumOfPlayersScore === 4) {
         displayController.displayWinner(
-          _players.find((player) => player.getMarker() === "X").getScore()
+          _players.find((player) => player.getType() === "human").getScore()
         );
       }
 
@@ -285,9 +285,9 @@ const displayController = (() => {
     });
   };
 
-  const updateScore = (score, marker) => {
+  const updateScore = (score, type) => {
     // containerCN = container class name
-    const containerCN = marker === "X" ? "player-profile" : "computer-profile";
+    const containerCN = type === "human" ? "player-profile" : "computer-profile";
     const scoreboard = document.querySelector(`.${containerCN} .score`);
     scoreboard.textContent = score;
   }
