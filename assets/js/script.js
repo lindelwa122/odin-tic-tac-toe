@@ -207,6 +207,10 @@ const gameController = ((player1, player2) => {
     displayController.updateScore(score, marker);
   }
 
+  const _sleep = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   const play = async () => {
     while (_sumOfPlayersScore < 5) {
       while (true) {
@@ -230,8 +234,14 @@ const gameController = ((player1, player2) => {
           break;
         }
       }
-      _updateSumOfPlayersScore();
-      setTimeout(_reset, 3000);
+      setTimeout(() => {
+        // wait for 3 seconds to allow player to view the board before it's cleared
+        // allow player to analyze how the lost or won
+        _reset();
+        _updateSumOfPlayersScore();
+      }, 3000);
+      // wait for the setTimeout before proceeding
+      await _sleep(3000);
     }
   };
 
