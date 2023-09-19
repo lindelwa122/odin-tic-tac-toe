@@ -24,3 +24,11 @@ Requirements:
             * ask the user which box they want to place their marker in
             * if updateBoard() returns true then return otherwise console log "Box {x} is occupied"
             * print the GameBoard()
+
+findWinner():
+
+- displayController();
+    * add an event listener to all the cells
+    * if a cell is clicked:
+        - get current player and call play() of that instance
+        
