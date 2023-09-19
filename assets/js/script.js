@@ -139,6 +139,8 @@ const player = (type, marker) => {
   const getType = () => type;
   const getMarker = () => marker;
 
+  const resetScore = () => _score = 0;
+
   const play = async () => {
     while (true) {
       const cell = await displayController.getPlayerPosition();
@@ -156,7 +158,7 @@ const player = (type, marker) => {
     }
   };
 
-  return { getMarker, getScore, getType, play, updateScore };
+  return { getMarker, getScore, getType, play, resetScore, updateScore };
 };
 
 const computer = (type, marker) => {
@@ -199,6 +201,15 @@ const gameController = ((player1, player2) => {
   const _reset = () => {
     gameboard.clearGameboard();
     displayController.updateBoard();
+  }
+
+  const newGame = () => {
+    for (const player of _players) {
+      player.resetScore();
+    }
+    _sumOfPlayersScore = 0;
+    _reset();
+    play();
   }
 
   const _updateScore = (marker) => {
@@ -252,7 +263,7 @@ const gameController = ((player1, player2) => {
     }
   };
 
-  return { play };
+  return { play, newGame };
 })(player1, player2);
 
 const displayController = (() => {
@@ -299,6 +310,31 @@ const displayController = (() => {
     } else {
       winnerBoard.textContent = "You lose!";
     }
+
+    // show reset button
+    const resetBtn = document.querySelector(".reset");
+    resetBtn.classList.add("show");
+
+    _resetBtnClickListener();
+  }
+
+  const _resetBtnClickListener = () => {
+    const resetBtn = document.querySelector(".reset");
+
+    const clickHandler = () => {
+      updateScore(0, "human");
+      updateScore(0, "computer");
+
+      const winnerBoard = document.querySelector(".round-board");
+      winnerBoard.textContent = "";
+
+      resetBtn.classList.remove("show");
+      resetBtn.removeEventListener("click", clickHandler);
+
+      gameController.newGame();
+    }
+
+    resetBtn.addEventListener("click", clickHandler);
   }
 
   return { displayWinner, getPlayerPosition, updateBoard, updateIndicator, updateScore };
