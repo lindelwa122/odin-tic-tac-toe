@@ -1,4 +1,4 @@
-// usage: converts how the human see the gameboard to how the conputer sees it (in rows and columns)
+// usage: converts how the humanMarker see the gameboard to how the conputer sees it (in rows and columns)
 const grid = {
   1: { row: 0, column: 0 },
   2: { row: 0, column: 1 },
@@ -153,10 +153,126 @@ const player = (type, marker) => {
 const computer = (type, marker) => {
   const prototype = player(type, marker);
 
+  const winning = (board, marker) => {
+    if (
+      (board[0] === marker && board[1] === marker && board[2] === marker) ||
+      (board[3] === marker && board[4] === marker && board[5] === marker) ||
+      (board[6] === marker && board[7] === marker && board[8] === marker) ||
+      (board[0] === marker && board[3] === marker && board[6] === marker) ||
+      (board[1] === marker && board[4] === marker && board[7] === marker) ||
+      (board[2] === marker && board[5] === marker && board[8] === marker) ||
+      (board[0] === marker && board[4] === marker && board[8] === marker) ||
+      (board[2] === marker && board[4] === marker && board[6] === marker)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const actions = (state) => {
+    return state.filter((cell) => cell !== "O" && cell !== "X");
+  }
+
+  const currentPlayer = (state) => {
+    const xCount = state.filter((cell) => cell === "X").length;
+    const oCount = state.filter((cell) => cell === "O").length;
+
+    if (xCount < oCount) return "X";
+    else if (xCount > oCount) return "O";
+    else return "O";
+  }
+
+  const result = (state, action) => {
+    state[action.index] = action.marker;
+    return state;
+  }
+
+  const terminal = (state) => {
+    if (
+      (actions(state).length === 0) ||
+      (winning(state, "X")) ||
+      (winning(state, "O"))
+    ) return true;
+    else return false;
+  }
+
+  const utility = (state) => {
+    if (winning(state, "X")) return 1;
+    else if (winning(state, "O")) return -1;
+    else return 0;
+  }
+
+  const maximise = (state) => {
+    if (terminal(state)) {
+      return utility(state);
+    }
+
+    let value = -1000000;
+    for (const action of actions(state)) {
+      const marker = currentPlayer(state);
+      a = { index: action, marker }
+      value = Math.max(value, minimise(result(state, a)));
+    }
+
+    return value;
+  }
+
+  const minimise = (state) => {
+    if (terminal(state)) {
+      return utility(state);
+    }
+
+    let value = 1000000;
+    for (const action of actions(state)) {
+      const marker = currentPlayer(state);
+      a = { index: action, marker }
+      value = Math.min(value, maximise(result(state, a)));
+    }
+
+    return value;
+  }
+
+  const humanMarker = marker === "X" ? "O" : "X";
+  const computerMarker = marker;
+
+  const minimax = (state) => {
+    const scores = {};
+
+    for (const action of actions(state)) {
+      scores[action] = maximise(state);
+    }
+
+    console.log(scores);
+
+    let value = -1000000;
+
+    for (const val of Object.values(scores)) {
+      value = Math.max(value, val);
+    }
+
+    for (const [k, v] of Object.entries(scores)) {
+      if (value === v) return +k;
+    }
+  }
+
   const play = () => {
     while (true) {
-      const row = Math.floor(Math.random() * 3);
-      const column = Math.floor(Math.random() * 3);
+      // const row = Math.floor(Math.random() * 3);
+      // const column = Math.floor(Math.random() * 3);
+
+    //   const newBoard = board.map((cell, index) => {
+    //   return cell === "" ? index : cell;
+    // });
+
+      const board = gameboard.getBoardData().map((cell, index) => {
+        return cell === "" ? index : cell;
+      });
+      const move = minimax(board) + 1;
+
+      console.log({ move })
+
+      const { row, column } = grid[move];
 
       const updated = gameboard.updateBoard(row, column, marker);
 
@@ -167,7 +283,7 @@ const computer = (type, marker) => {
   return Object.assign({}, prototype, { play });
 };
 
-const player1 = player("human", "X");
+const player1 = player("humanMarker", "X");
 const player2 = computer("computer", "O");
 
 const gameController = ((player1, player2) => {
@@ -247,7 +363,7 @@ const gameController = ((player1, player2) => {
 
       if (_sumOfPlayersScore === 5) {
         displayController.displayWinner(
-          _players.find((player) => player.getType() === "human").getScore()
+          _players.find((player) => player.getType() === "humanMarker").getScore()
         );
       }
     }
@@ -261,7 +377,7 @@ const displayController = (() => {
     const resetBtn = document.querySelector(".reset");
 
     const clickHandler = () => {
-      updateScore(0, "human");
+      updateScore(0, "humanMarker");
       updateScore(0, "computer");
 
       const winnerBoard = document.querySelector(".round-board");
@@ -325,7 +441,7 @@ const displayController = (() => {
   const updateScore = (score, type) => {
     // containerCN = container class name
     const containerCN =
-      type === "human" ? "player-profile" : "computer-profile";
+      type === "humanMarker" ? "player-profile" : "computer-profile";
 
     const scoreboard = document.querySelector(`.${containerCN} .score`);
     scoreboard.textContent = score;
