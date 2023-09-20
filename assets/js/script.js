@@ -168,116 +168,101 @@ const computer = (type, marker) => {
     } else {
       return false;
     }
-  }
+  };
 
   const actions = (state) => {
     return state.filter((cell) => cell !== "O" && cell !== "X");
-  }
+  };
 
   const currentPlayer = (state) => {
     const xCount = state.filter((cell) => cell === "X").length;
     const oCount = state.filter((cell) => cell === "O").length;
 
-    if (xCount < oCount) return "X";
+    if (xCount < oCount || xCount === oCount) return "X";
     else if (xCount > oCount) return "O";
-    else return "O";
-  }
+  };
 
   const result = (state, action) => {
-    state[action.index] = action.marker;
-    return state;
-  }
+    const copy = state.map((item) => item);
+    copy[action.index] = action.marker;
+    return copy;
+  };
 
   const terminal = (state) => {
     if (
-      (actions(state).length === 0) ||
-      (winning(state, "X")) ||
-      (winning(state, "O"))
-    ) return true;
+      actions(state).length === 0 ||
+      winning(state, "X") ||
+      winning(state, "O")
+    )
+      return true;
     else return false;
-  }
+  };
 
   const utility = (state) => {
-    if (winning(state, "X")) return 1;
-    else if (winning(state, "O")) return -1;
+    if (winning(state, "X")) return -1;
+    else if (winning(state, "O")) return 1;
     else return 0;
-  }
+  };
 
   const maximise = (state) => {
     if (terminal(state)) {
-      return utility(state);
+      return { value: utility(state) };
     }
 
-    let value = -1000000;
+    const record = {
+      value: -1000000,
+      index: -1,
+    };
+
     for (const action of actions(state)) {
-      const marker = currentPlayer(state);
-      a = { index: action, marker }
-      value = Math.max(value, minimise(result(state, a)));
+      const a = { index: action, marker: currentPlayer(state) };
+      const newState = result(state, a);
+      const value = Math.max(record.value, minimise(newState).value);
+      if (value !== record.value) {
+        record.value = value;
+        record.index = action;
+      }
     }
 
-    return value;
-  }
+    return record;
+  };
 
   const minimise = (state) => {
     if (terminal(state)) {
-      return utility(state);
+      return { value: utility(state) };
     }
 
-    let value = 1000000;
+    const record = {
+      value: 1000000,
+      index: -1,
+    };
+
     for (const action of actions(state)) {
-      const marker = currentPlayer(state);
-      a = { index: action, marker }
-      value = Math.min(value, maximise(result(state, a)));
+      const a = { index: action, marker: currentPlayer(state) };
+      const newState = result(state, a);
+      const value = Math.min(record.value, maximise(newState).value);
+      if (value !== record.value) {
+        record.value = value;
+        record.index = action;
+      }
     }
 
-    return value;
-  }
-
-  const humanMarker = marker === "X" ? "O" : "X";
-  const computerMarker = marker;
+    return record;
+  };
 
   const minimax = (state) => {
-    const scores = {};
-
-    for (const action of actions(state)) {
-      scores[action] = maximise(state);
-    }
-
-    console.log(scores);
-
-    let value = -1000000;
-
-    for (const val of Object.values(scores)) {
-      value = Math.max(value, val);
-    }
-
-    for (const [k, v] of Object.entries(scores)) {
-      if (value === v) return +k;
-    }
-  }
+    const record = maximise(state);
+    return record.index;
+  };
 
   const play = () => {
-    while (true) {
-      // const row = Math.floor(Math.random() * 3);
-      // const column = Math.floor(Math.random() * 3);
+    const board = gameboard.getBoardData().map((cell, index) => {
+      return cell === "" ? index : cell;
+    });
 
-    //   const newBoard = board.map((cell, index) => {
-    //   return cell === "" ? index : cell;
-    // });
-
-      const board = gameboard.getBoardData().map((cell, index) => {
-        return cell === "" ? index : cell;
-      });
-      const move = minimax(board) + 1;
-
-      console.log({ move })
-
-      const { row, column } = grid[move];
-
-      const updated = gameboard.updateBoard(row, column, marker);
-
-      if (updated) break;
-    }
+    const move = minimax(board) + 1;
+    const { row, column } = grid[move];
+    gameboard.updateBoard(row, column, marker);
   };
 
   return Object.assign({}, prototype, { play });
@@ -295,6 +280,14 @@ const gameController = ((player1, player2) => {
   const _getCurrentPlayer = () => _players[_currentPlayer];
 
   const _reset = () => {
+    const player = _getCurrentPlayer();
+    // If the last player is the computer updates indicator
+    // because the human will start the next round
+    if (player.getType() === "computer") {
+      displayController.updateIndicator();
+    }
+
+    _currentPlayer = 0;
     gameboard.clearGameboard();
     displayController.updateBoard();
   };
@@ -347,7 +340,6 @@ const gameController = ((player1, player2) => {
           _updateScore("O");
           break;
         } else if (winner === "draw") {
-          alert("It's a draw");
           break;
         }
       }
@@ -363,7 +355,9 @@ const gameController = ((player1, player2) => {
 
       if (_sumOfPlayersScore === 5) {
         displayController.displayWinner(
-          _players.find((player) => player.getType() === "humanMarker").getScore()
+          _players
+            .find((player) => player.getType() === "humanMarker")
+            .getScore()
         );
       }
     }
