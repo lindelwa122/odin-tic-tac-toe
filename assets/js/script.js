@@ -153,7 +153,7 @@ const player = (type, marker) => {
 const computer = (type, marker) => {
   const prototype = player(type, marker);
 
-  const winning = (board, marker) => {
+  const _winning = (board, marker) => {
     if (
       (board[0] === marker && board[1] === marker && board[2] === marker) ||
       (board[3] === marker && board[4] === marker && board[5] === marker) ||
@@ -170,11 +170,11 @@ const computer = (type, marker) => {
     }
   };
 
-  const actions = (state) => {
+  const _actions = (state) => {
     return state.filter((cell) => cell !== "O" && cell !== "X");
   };
 
-  const currentPlayer = (state) => {
+  const _currentPlayer = (state) => {
     const xCount = state.filter((cell) => cell === "X").length;
     const oCount = state.filter((cell) => cell === "O").length;
 
@@ -182,31 +182,31 @@ const computer = (type, marker) => {
     else if (xCount > oCount) return "O";
   };
 
-  const result = (state, action) => {
+  const _result = (state, action) => {
     const copy = state.map((item) => item);
     copy[action.index] = action.marker;
     return copy;
   };
 
-  const terminal = (state) => {
+  const _terminal = (state) => {
     if (
-      actions(state).length === 0 ||
-      winning(state, "X") ||
-      winning(state, "O")
+      _actions(state).length === 0 ||
+      _winning(state, "X") ||
+      _winning(state, "O")
     )
       return true;
     else return false;
   };
 
-  const utility = (state) => {
-    if (winning(state, "X")) return -1;
-    else if (winning(state, "O")) return 1;
+  const _utility = (state) => {
+    if (_winning(state, "X")) return -1;
+    else if (_winning(state, "O")) return 1;
     else return 0;
   };
 
-  const maximise = (state) => {
-    if (terminal(state)) {
-      return { value: utility(state) };
+  const _maximise = (state) => {
+    if (_terminal(state)) {
+      return { value: _utility(state) };
     }
 
     const record = {
@@ -214,10 +214,10 @@ const computer = (type, marker) => {
       index: -1,
     };
 
-    for (const action of actions(state)) {
-      const a = { index: action, marker: currentPlayer(state) };
-      const newState = result(state, a);
-      const value = Math.max(record.value, minimise(newState).value);
+    for (const action of _actions(state)) {
+      const a = { index: action, marker: _currentPlayer(state) };
+      const newState = _result(state, a);
+      const value = Math.max(record.value, _minimise(newState).value);
       if (value !== record.value) {
         record.value = value;
         record.index = action;
@@ -227,9 +227,9 @@ const computer = (type, marker) => {
     return record;
   };
 
-  const minimise = (state) => {
-    if (terminal(state)) {
-      return { value: utility(state) };
+  const _minimise = (state) => {
+    if (_terminal(state)) {
+      return { value: _utility(state) };
     }
 
     const record = {
@@ -237,10 +237,10 @@ const computer = (type, marker) => {
       index: -1,
     };
 
-    for (const action of actions(state)) {
-      const a = { index: action, marker: currentPlayer(state) };
-      const newState = result(state, a);
-      const value = Math.min(record.value, maximise(newState).value);
+    for (const action of _actions(state)) {
+      const a = { index: action, marker: _currentPlayer(state) };
+      const newState = _result(state, a);
+      const value = Math.min(record.value, _maximise(newState).value);
       if (value !== record.value) {
         record.value = value;
         record.index = action;
@@ -250,8 +250,8 @@ const computer = (type, marker) => {
     return record;
   };
 
-  const minimax = (state) => {
-    const record = maximise(state);
+  const _minimax = (state) => {
+    const record = _maximise(state);
     return record.index;
   };
 
@@ -260,7 +260,7 @@ const computer = (type, marker) => {
       return cell === "" ? index : cell;
     });
 
-    const move = minimax(board) + 1;
+    const move = _minimax(board) + 1;
     const { row, column } = grid[move];
     gameboard.updateBoard(row, column, marker);
   };
